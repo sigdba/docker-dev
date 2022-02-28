@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      -run: bash package.sh
+      - run: bash package.sh
 
       - name: release
         if: github.ref == 'refs/heads/main'
