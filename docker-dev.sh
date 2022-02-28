@@ -53,7 +53,7 @@ fi
 
 # Check if a rebuild is needed
 cat_rebuilding_files () {
-  cat $0 ${DD_HOME}/Dockerfile site.conf ${DD_HOME}/*
+  cat $0 site.conf ${DD_HOME}/*
   [ -f $SCRIPT_DIR/requirements.txt ] && cat $SCRIPT_DIR/requirements.txt
 }
 TAG=$(cat_rebuilding_files |$MD5CMD |cut -d ' ' -f 1)

@@ -1,0 +1,6 @@
+#+TITLE: SIG Docker-Based Developer Environments
+
+#+begin_src bash
+curl 'https://github.com/sigdba/docker-dev/releases/latest/download/docker-dev.sh' -Lo docker-dev.sh
+chmod 755 docker-dev.sh
+#+end_src
