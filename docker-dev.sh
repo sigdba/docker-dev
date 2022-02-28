@@ -27,8 +27,6 @@ SCRIPT_DIR="$(cd "$SCRIPT_DIR"; pwd -P)"
 # requirements.txt is required
 [ -f $SCRIPT_DIR/requirements.txt ] || die "requirements.txt not found. See requirements.txt.example"
 
-# Expand DD_HOME
-DD_HOME=$SCRIPT_DIR/build
 
 # Figure out which md5 command to use
 if which md5sum >/dev/null; then
@@ -39,9 +37,23 @@ else
   die "No md5 command found. Install md5 or md5sum."
 fi
 
+# Expand DD_HOME
+SCRIPT_END=$( awk '
+  BEGIN { err=1; }
+  /^\w*___END_OF_SHELL_SCRIPT___\w*$/ { print NR+1; err=0; exit 0; }
+  END { if (err==1) print "?"; }
+' "$0" )
+if [ "$SCRIPT_END" == '?' ]; then
+  DD_HOME=$SCRIPT_DIR/build
+else
+  DD_HOME=$SCRIPT_DIR/.docker-dev
+  mkdir -p ${DD_HOME}
+  tail -n +${SCRIPT_END} $0 |base64 -d |tar xjf - -C ${DD_HOME} || die "Error unpacking inline package"
+fi
+
 # Check if a rebuild is needed
 cat_rebuilding_files () {
-  cat ${DD_HOME}/Dockerfile site.conf ${DD_HOME}/*
+  cat $0 ${DD_HOME}/Dockerfile site.conf ${DD_HOME}/*
   [ -f $SCRIPT_DIR/requirements.txt ] && cat $SCRIPT_DIR/requirements.txt
 }
 TAG=$(cat_rebuilding_files |$MD5CMD |cut -d ' ' -f 1)
