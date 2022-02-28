@@ -7,8 +7,8 @@ RUN sed -i 's:^path-exclude /usr/share/groff/\*::' /etc/dpkg/dpkg.cfg.d/docker \
  && pip install --upgrade pip \
  && sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-# COPY requirements.txt /build/
-# RUN pip install -Ur /build/requirements.txt --no-cache-dir
+COPY requirements.txt /build/
+RUN pip install -Ur /build/requirements.txt --no-cache-dir
 
 COPY . /build/
 RUN mkdir -p /home/user \
