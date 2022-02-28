@@ -27,6 +27,9 @@ SCRIPT_DIR="$(cd "$SCRIPT_DIR"; pwd -P)"
 # requirements.txt is required
 [ -f $SCRIPT_DIR/requirements.txt ] || die "requirements.txt not found. See requirements.txt.example"
 
+# Expand DD_HOME
+DD_HOME=$SCRIPT_DIR/build
+
 # Figure out which md5 command to use
 if which md5sum >/dev/null; then
   MD5CMD=md5sum
@@ -38,7 +41,7 @@ fi
 
 # Check if a rebuild is needed
 cat_rebuilding_files () {
-  cat Dockerfile site.conf .docker-dev/*
+  cat ${DD_HOME}/Dockerfile site.conf ${DD_HOME}/*
   [ -f $SCRIPT_DIR/requirements.txt ] && cat $SCRIPT_DIR/requirements.txt
 }
 TAG=$(cat_rebuilding_files |$MD5CMD |cut -d ' ' -f 1)
@@ -50,8 +53,10 @@ HIST_FILE="$SCRIPT_DIR/.docker-dev-zsh_history"
 [ -z "$(docker images -q $IMAGE 2> /dev/null)" ] && BUILD_IMAGE=y
 [[ "$1" == '-b' ]] && BUILD_IMAGE=y
 if [ -n "$BUILD_IMAGE" ]; then
-  cd $SCRIPT_DIR
-  docker build -t "$IMAGE" . || die "docker build failed"
+  cd ${DD_HOME}
+  ln -sf ../requirements.txt ./requirements.txt
+  ln -sf ../site.conf ./site.conf
+  tar czh . | docker build -t "$IMAGE" - || die "docker build failed"
 fi
 
 touch "$HIST_FILE"

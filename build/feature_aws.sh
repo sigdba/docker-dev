@@ -1,3 +1,5 @@
+shopt -s nullglob
+
 case $(uname -m) in
     x86_64) SM_ARCH=64bit; CW_ARCH=amd64 ;;
     aarch64) SM_ARCH=arm64; CW_ARCH=arm64 ;;
