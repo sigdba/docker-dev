@@ -1,6 +1,13 @@
 # . /repo/site.conf
 
-. /etc/profile.d/docker_dev.sh
+if [ -d /etc/profile.d ]; then
+  for i in /etc/profile.d/*.sh; do
+    if [ -r $i ]; then
+      . $i
+    fi
+  done
+  unset i
+fi
 
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME=clean
