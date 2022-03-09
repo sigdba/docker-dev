@@ -2,7 +2,7 @@ FROM python:3.9.9-slim AS base
 
 RUN sed -i 's:^path-exclude /usr/share/groff/\*::' /etc/dpkg/dpkg.cfg.d/docker \
  && apt-get update \
- && apt-get install -y git wget curl nmap zsh groff vim entr sudo jq parallel unzip make \
+ && apt-get install -y git wget curl nmap dig zsh groff vim entr sudo jq parallel unzip make \
  && sed -i 's/^%sudo.*/%sudo ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers \
  && pip install --upgrade pip \
  && sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
