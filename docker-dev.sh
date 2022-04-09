@@ -68,7 +68,9 @@ if [ -n "$BUILD_IMAGE" ]; then
   cd ${DD_HOME}
   ln -sf ../requirements.txt ./requirements.txt
   ln -sf ../site.conf ./site.conf
-  tar czh . | docker build -t "$IMAGE" - || die "docker build failed"
+  rm -f ${TARBALL} || die "Error removing old context tarball"
+  tar czhf ${TARBALL} . || die "Error creating context tarball"
+  cat ${TARBALL} | docker build -t "$IMAGE" - || die "docker build failed"
 fi
 
 touch "$HIST_FILE"
