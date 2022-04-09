@@ -68,6 +68,7 @@ if [ -n "$BUILD_IMAGE" ]; then
   cd ${DD_HOME}
   ln -sf ../requirements.txt ./requirements.txt
   ln -sf ../site.conf ./site.conf
+  TARBALL="${SCRIPT_DIR}/.-docker-dev-build-tmp.tar.gz"
   rm -f ${TARBALL} || die "Error removing old context tarball"
   tar czhf ${TARBALL} . || die "Error creating context tarball"
   cat ${TARBALL} | docker build -t "$IMAGE" - || die "docker build failed"
