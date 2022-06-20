@@ -24,6 +24,9 @@ SCRIPT_DIR="$(cd "$SCRIPT_DIR"; pwd -P)"
 [ -f $SCRIPT_DIR/site.conf ] || die "site.conf not found. See site.conf.example"
 . $SCRIPT_DIR/site.conf
 
+# Set defaults
+[ -z "$DOCKERDEV_BASE" ] && DOCKERDEV_BASE=python
+
 # Figure out which md5 command to use
 if which md5sum >/dev/null; then
   MD5CMD=md5sum
@@ -72,7 +75,7 @@ if [ -n "$BUILD_IMAGE" ]; then
   TARBALL="${SCRIPT_DIR}/.-docker-dev-build-tmp.tar.gz"
   rm -f ${TARBALL} || die "Error removing old context tarball"
   tar czhf ${TARBALL} . || die "Error creating context tarball"
-  cat ${TARBALL} | docker build -t "$IMAGE" - || die "docker build failed"
+  cat ${TARBALL} | docker build -t "$IMAGE" -f Dockerfile.${DOCKERDEV_BASE} - || die "docker build failed"
 fi
 
 touch "$HIST_FILE"
