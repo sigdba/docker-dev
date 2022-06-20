@@ -24,10 +24,6 @@ SCRIPT_DIR="$(cd "$SCRIPT_DIR"; pwd -P)"
 [ -f $SCRIPT_DIR/site.conf ] || die "site.conf not found. See site.conf.example"
 . $SCRIPT_DIR/site.conf
 
-# requirements.txt is required
-[ -f $SCRIPT_DIR/requirements.txt ] || die "requirements.txt not found. See requirements.txt.example"
-
-
 # Figure out which md5 command to use
 if which md5sum >/dev/null; then
   MD5CMD=md5sum
@@ -66,7 +62,12 @@ HIST_FILE="$SCRIPT_DIR/.docker-dev-zsh_history"
 [[ "$1" == '-b' ]] && BUILD_IMAGE=y
 if [ -n "$BUILD_IMAGE" ]; then
   cd ${DD_HOME}
-  ln -sf ../requirements.txt ./requirements.txt
+  if [ -f $SCRIPT_DIR/requirements.txt ]; then
+    ln -sf ../requirements.txt ./requirements.txt
+  else
+    rm -f ./requirements.txt
+    touch ./requirements.txt
+  fi
   ln -sf ../site.conf ./site.conf
   TARBALL="${SCRIPT_DIR}/.-docker-dev-build-tmp.tar.gz"
   rm -f ${TARBALL} || die "Error removing old context tarball"
