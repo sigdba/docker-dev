@@ -29,6 +29,14 @@ cp -R /root/.oh-my-zsh $USER_HOME
 chown -R $HOST_UID:$HOST_GID $USER_HOME
 ln -s /home/user /home/$HOST_USERNAME
 
+# Check for Docker-in-Docker and set user permissions
+ds="/var/run/docker.sock"
+if [ -S $ds ]; then
+  dgid=$(stat -c '%g' $ds)
+  grep -q "$dgid" /etc/group || groupadd -g "$dgid" dddocker
+  usermod -aG "$dgid" "$HOST_USERNAME"
+fi
+
 # su user -c /bin/bash
 # su -l -c /bin/bash user
 su - "$HOST_USERNAME"
