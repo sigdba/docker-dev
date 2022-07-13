@@ -98,6 +98,17 @@ else
   DOCKER_OPTS="$DOCKER_OPTS -e AWS_PROFILE=$SITE_NAME"
 fi
 
+if echo "$DOCKERDEV_FEATURES" |grep -q docker; then
+  echo "Docker-in-Docker feature enabled"
+  ds=/var/run/docker.sock
+  if [ -S "$ds" ]; then
+    echo "Mounting Docker socket within container."
+    DOCKER_OPTS="$DOCKER_OPTS -v $ds:$ds"
+  else
+    echo "Docker socket not found. Docker will not be available within the container."
+  fi
+fi
+
 # DOCKER_OPTS="$DOCKER_OPTS -u 0:1000"
 
 #
