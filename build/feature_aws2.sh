@@ -17,11 +17,3 @@ curl "https://awscli.amazonaws.com/awscli-exe-linux-${CL_ARCH}.zip" -o "/awscliv
  && dpkg -i /cw.deb \
  && rm -f /cw.deb \
  || die "installation error"
-
-# TEMPORARY: https://github.com/Sceptre/sceptre/issues/1180
-# RUN chmod -R a+rw /usr/local/lib/python3.8/site-packages
-for P in /usr/local/lib/python*/site-packages/sceptre/cli/update.py; do
-    echo "Patching $P"
-    cp -f /build/sceptre_patch_update.py $P || die "sceptre patch error"
-done
-
